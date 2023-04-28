@@ -35,7 +35,8 @@ def main():
         exit("Usage: cc arg")
     fname = sys.argv[1]
     graph = read_graph(fname)
-    print(c_closure(graph))
+    cc, cw = c_closure(graph)
+    print(f"c-closure  = {cc}")
 
 
 if __name__ == "__main__":

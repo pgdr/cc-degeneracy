@@ -54,45 +54,55 @@ def c_closure(G):
     #     deg_left = len(N_left)
     #     print(v, deg_left, N_left)
 
-    # print("CASE 1: u < v < x")
+    print("CASE 1: u < v < x")
+    case1 = 0
     for x in ordering:
         Nx = L[x]
         for u, v in choose(Nx, 2):
             if G.has_edge(u, v):
                 continue
+            case1 += 1
             Nuv = common_neighbors(G, u, v)
             if len(Nuv) > C:
                 C = len(Nuv)
                 CW = v, u, Nuv
+    print("...", case1, "\tc =", C)
 
-    # print("CASE 2: u < x < v")
+    print("CASE 2: u < x < v -> Note, only if c < Left(v)")
+    case2 = 0
     for v in ordering:
         Nv = L[v]
+        if C >= len(Nv):
+            continue
         for x in Nv:
             Nx = L[x]
             for u in Nx:
                 if G.has_edge(u, v):
                     continue
+                case2 += 1
                 Nuv = common_neighbors(G, u, v)
                 if len(Nuv) > C:
                     C = len(Nuv)
                     CW = v, u, Nuv
+    print("...", case2, "\tc =", C)
 
-    # print("CASE 3: x < u < v -> Note: only if c < degeneracy !")
-    if C > degeneracy:
-        return C, CW
-    for v_idx, v in enumerate(ordering):
-        Nv = L[v]
-        for u_idx, u in enumerate(ordering):
-            if u_idx >= v_idx:
-                break
-            if G.has_edge(u, v):
-                continue
-            Nu = L[u]
-            Nuv = set(Nu).intersection(set(Nv))
-            if len(Nuv) > C:
-                C = len(Nuv)
-                CW = v, u, Nuv
+    print("CASE 3: x < u < v -> Note: only if c < degeneracy !")
+    case3 = 0
+    if C < degeneracy:
+        for v_idx, v in enumerate(ordering):
+            Nv = L[v]
+            for u_idx, u in enumerate(ordering):
+                if u_idx >= v_idx:
+                    break
+                if G.has_edge(u, v):
+                    continue
+                case3 += 1
+                Nu = L[u]
+                Nuv = set(Nu).intersection(set(Nv))
+                if len(Nuv) > C:
+                    C = len(Nuv)
+                    CW = v, u, Nuv
+    print("...", case3, "\tc =", C)
     return C, CW
 
 
@@ -102,7 +112,10 @@ def main():
     fname = sys.argv[1]
     graph = read_graph(fname)
     graph.remove_edges_from(nx.selfloop_edges(graph))
-    print(c_closure(graph))
+    dgy = max(nx.core_number(graph).values())
+    cc, cw = c_closure(graph)
+    print(f"degeneracy = {dgy}")
+    print(f"c-closure  = {cc}")
 
 
 if __name__ == "__main__":
