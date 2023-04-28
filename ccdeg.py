@@ -101,6 +101,7 @@ def main():
         exit("Usage: ccdeg arg")
     fname = sys.argv[1]
     graph = read_graph(fname)
+    graph.remove_edges_from(nx.selfloop_edges(graph))
     print(c_closure(graph))
 
 
