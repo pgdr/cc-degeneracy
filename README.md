@@ -13,7 +13,7 @@ smaller than the c-closure.
 
 ## Some experiments
 
-| name                |     n |      m |   deg |   c-c |   runtime | smaller   |
+| name                |     n |      m |   deg |   c-c | time (ms) | smaller   |
 |---------------------|-------|--------|-------|-------|-----------|-----------|
 | karate.csv          |    34 |     78 |     4 |     6 |       0.6 | d         |
 | adjnoun.csv         |   112 |    425 |     6 |    13 |       2.5 | d         |
