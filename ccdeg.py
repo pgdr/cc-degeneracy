@@ -51,13 +51,10 @@ def left_neighbors(G, ordering):
     return L
 
 
-def common_neighbors(G, u, v):
-    return set(nx.neighbors(G, u)).intersection(set(nx.neighbors(G, v)))
-
-
 def c_closure(G):
     degeneracy, ordering = degeneracy_ordering(G)
     L = left_neighbors(G, ordering)
+    N = {v: set(nx.neighbors(G, v)) for v in G.nodes()}
     # print(degeneracy)
     # print(ordering)
     C = 0  # the c-closure
@@ -76,7 +73,7 @@ def c_closure(G):
             if G.has_edge(u, v):
                 continue
             case1 += 1
-            Nuv = common_neighbors(G, u, v)
+            Nuv = N[u].intersection(N[v])
             if len(Nuv) > C:
                 C = len(Nuv)
                 CW = v, u, Nuv
@@ -95,7 +92,7 @@ def c_closure(G):
                     if G.has_edge(u, v):
                         continue
                     case2 += 1
-                    Nuv = common_neighbors(G, u, v)
+                    Nuv = L[v].intersection(N[u])
                     if len(Nuv) > C:
                         C = len(Nuv)
                         CW = v, u, Nuv
@@ -117,7 +114,7 @@ def c_closure(G):
                 if len(Nu) <= C:
                     continue
                 case3 += 1
-                Nuv = set(Nu).intersection(set(Nv))
+                Nuv = Nu.intersection(Nv)
                 if len(Nuv) > C:
                     C = len(Nuv)
                     CW = v, u, Nuv
