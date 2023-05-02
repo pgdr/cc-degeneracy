@@ -127,33 +127,30 @@ def c_closure(G):
 
 def main():
     if len(sys.argv) < 2:
-        exit("Usage: ccdeg dataset [dataset2, dataset3, ..., datasetn]")
+        exit(
+            "Usage: ccdeg dataset [dataset2, dataset3, ..., datasetn]"
+        )
+    print("name,n,m,deg,c-c,runtime,smaller")
     for fname in sys.argv[1:]:
-        print("\n" * 3)
-        print(fname.center(59, "="), end="\n" * 2)
         start = dt.now()
-        print(start)
+        # print(start)
+
+        print(fname, end=",")
 
         graph = read_graph(fname)
         graph.remove_edges_from(nx.selfloop_edges(graph))
-        print(f"n = {len(graph.nodes())}")
-        print(f"m = {len(graph.edges())}")
+        print(f"{len(graph.nodes())}", end=",")
+        print(f"{len(graph.edges())}", end=",")
         dgy = max(nx.core_number(graph).values())
-        print(f"degeneracy = {dgy}")
+        print(f"{dgy}", end=",")
         cc, cw = c_closure(graph)
-        print(f"c-closure  = {cc}")
-        print(f"c-closure witness {cw[0], cw[1]}: \t {cw[2]}")
+        print(f"{cc}", end=",")
+        # print(f"c-closure witness {cw[0], cw[1]}: \t {cw[2]}")
         end = dt.now()
-        print(end)
-        delta = (end - start).total_seconds()
-        if delta > 2:
-            delta = round(delta, 3)
-            print(f"{delta} sec")
-        else:
-            delta = round(delta * 1000, 1)
-            print(f"{delta} ms")
-        if cc < dgy:
-            print("c-closure < degeneracy")
+        # print(end)
+        delta = round((end - start).total_seconds() * 1000, 1)
+        print(f"{delta}", end=",")
+        print("c" if cc < dgy else "d")
 
 
 if __name__ == "__main__":
