@@ -106,13 +106,17 @@ def c_closure(G):
     if C < degeneracy:
         for v_idx, v in enumerate(ordering):
             Nv = L[v]
+            if len(Nv) <= C:
+                continue
             for u_idx, u in enumerate(ordering):
                 if u_idx >= v_idx:
                     break
                 if G.has_edge(u, v):
                     continue
-                case3 += 1
                 Nu = L[u]
+                if len(Nu) <= C:
+                    continue
+                case3 += 1
                 Nuv = set(Nu).intersection(set(Nv))
                 if len(Nuv) > C:
                     C = len(Nuv)
