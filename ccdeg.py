@@ -1,6 +1,8 @@
 import sys
-import networkx as nx
 from itertools import combinations as choose
+from datetime import datetime as dt
+import heapq as Q
+import networkx as nx
 
 
 def read_graph(csv_file):
@@ -14,11 +16,23 @@ def read_graph(csv_file):
 
 
 def degeneracy_ordering(G):
-    dgy = max(nx.core_number(G).values())
-    cores = nx.core_number(G).items()
-    ordered = sorted((k, v) for (v, k) in cores)
-    # TODO verify that ordered is a degeneracy ordering!?  Should be 4?
-    return dgy, [v for (_, v) in reversed(ordered)]
+    degrees = {v: G.degree(v) for v in G.nodes()}
+    pq = [(G.degree(v), v) for v in G.nodes()]
+    Q.heapify(pq)
+    ordering = []
+    deg = 0
+    while pq:
+        d, v = Q.heappop(pq)
+        if degrees[v] == -1:
+            continue
+        ordering.append(v)
+        deg = max(deg, degrees[v])
+        degrees[v] = -1
+        for u in G.neighbors(v):
+            if degrees[u] != -1:
+                Q.heappush(pq, (degrees[u] - 1, u))
+                degrees[u] -= 1
+    return deg, list(reversed(ordering))
 
 
 def _left_neighborhood(G, V_to_idx, v):
@@ -54,7 +68,7 @@ def c_closure(G):
     #     deg_left = len(N_left)
     #     print(v, deg_left, N_left)
 
-    print("CASE 1: u < v < x")
+    # print("CASE 1: u < v < x")
     case1 = 0
     for x in ordering:
         Nx = L[x]
@@ -66,27 +80,28 @@ def c_closure(G):
             if len(Nuv) > C:
                 C = len(Nuv)
                 CW = v, u, Nuv
-    print("...", case1, "\tc =", C)
+    # print("...", case1, "\tc =", C)
 
-    print("CASE 2: u < x < v -> Note, only if c < Left(v)")
-    case2 = 0
-    for v in ordering:
-        Nv = L[v]
-        if C >= len(Nv):
-            continue
-        for x in Nv:
-            Nx = L[x]
-            for u in Nx:
-                if G.has_edge(u, v):
-                    continue
-                case2 += 1
-                Nuv = common_neighbors(G, u, v)
-                if len(Nuv) > C:
-                    C = len(Nuv)
-                    CW = v, u, Nuv
-    print("...", case2, "\tc =", C)
+    # print("CASE 2: u < x < v -> Note, only if c < Left(v)")
+    if C < degeneracy:
+        case2 = 0
+        for v in ordering:
+            Nv = L[v]
+            if C >= len(Nv):
+                continue
+            for x in Nv:
+                Nx = L[x]
+                for u in Nx:
+                    if G.has_edge(u, v):
+                        continue
+                    case2 += 1
+                    Nuv = common_neighbors(G, u, v)
+                    if len(Nuv) > C:
+                        C = len(Nuv)
+                        CW = v, u, Nuv
+    #    print("...", case2, "\tc =", C)
 
-    print("CASE 3: x < u < v -> Note: only if c < degeneracy !")
+    # print("CASE 3: x < u < v -> Note: only if c < degeneracy !")
     case3 = 0
     if C < degeneracy:
         for v_idx, v in enumerate(ordering):
@@ -102,20 +117,39 @@ def c_closure(G):
                 if len(Nuv) > C:
                     C = len(Nuv)
                     CW = v, u, Nuv
-    print("...", case3, "\tc =", C)
+    # print("...", case3, "\tc =", C)
     return C, CW
 
 
 def main():
-    if len(sys.argv) != 2:
-        exit("Usage: ccdeg arg")
-    fname = sys.argv[1]
-    graph = read_graph(fname)
-    graph.remove_edges_from(nx.selfloop_edges(graph))
-    dgy = max(nx.core_number(graph).values())
-    cc, cw = c_closure(graph)
-    print(f"degeneracy = {dgy}")
-    print(f"c-closure  = {cc}")
+    if len(sys.argv) < 2:
+        exit("Usage: ccdeg dataset [dataset2, dataset3, ..., datasetn]")
+    for fname in sys.argv[1:]:
+        print("\n" * 3)
+        print(fname.center(59, "="), end="\n" * 2)
+        start = dt.now()
+        print(start)
+
+        graph = read_graph(fname)
+        graph.remove_edges_from(nx.selfloop_edges(graph))
+        print(f"n = {len(graph.nodes())}")
+        print(f"m = {len(graph.edges())}")
+        dgy = max(nx.core_number(graph).values())
+        print(f"degeneracy = {dgy}")
+        cc, cw = c_closure(graph)
+        print(f"c-closure  = {cc}")
+        print(f"c-closure witness {cw[0], cw[1]}")
+        end = dt.now()
+        print(end)
+        delta = (end - start).total_seconds()
+        if delta > 2:
+            delta = round(delta, 3)
+            print(f"{delta} sec")
+        else:
+            delta = round(delta * 1000, 1)
+            print(f"{delta} ms")
+        if cc < dgy:
+            print("c-closure < degeneracy")
 
 
 if __name__ == "__main__":
