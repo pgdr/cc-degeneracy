@@ -138,7 +138,7 @@ def main():
         print(f"degeneracy = {dgy}")
         cc, cw = c_closure(graph)
         print(f"c-closure  = {cc}")
-        print(f"c-closure witness {cw[0], cw[1]}")
+        print(f"c-closure witness {cw[0], cw[1]}: \t {cw[2]}")
         end = dt.now()
         print(end)
         delta = (end - start).total_seconds()
