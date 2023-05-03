@@ -55,70 +55,55 @@ def c_closure(G):
     degeneracy, ordering = degeneracy_ordering(G)
     L = left_neighbors(G, ordering)
     N = {v: set(nx.neighbors(G, v)) for v in G.nodes()}
-    # print(degeneracy)
-    # print(ordering)
     C = 0  # the c-closure
     CW = None, None, []  # c-closure witness
 
-    # for v in ordering:
-    #     N_left = L[v]
-    #     deg_left = len(N_left)
-    #     print(v, deg_left, N_left)
-
-    # print("CASE 1: u < v < x")
-    case1 = 0
+    #  CASE 1: u < v < x
     for x in ordering:
         Nx = L[x]
         for u, v in choose(Nx, 2):
             if G.has_edge(u, v):
                 continue
-            case1 += 1
             Nuv = N[u].intersection(N[v])
             if len(Nuv) > C:
                 C = len(Nuv)
                 CW = v, u, Nuv
-    # print("...", case1, "\tc =", C)
 
-    # print("CASE 2: u < x < v -> Note, only if c < Left(v)")
-    if C < degeneracy:
-        case2 = 0
-        for v in ordering:
-            Nv = L[v]
-            if C >= len(Nv):
-                continue
-            for x in Nv:
-                Nx = L[x]
-                for u in Nx:
-                    if G.has_edge(u, v):
-                        continue
-                    case2 += 1
-                    Nuv = L[v].intersection(N[u])
-                    if len(Nuv) > C:
-                        C = len(Nuv)
-                        CW = v, u, Nuv
-    #    print("...", case2, "\tc =", C)
-
-    # print("CASE 3: x < u < v -> Note: only if c < degeneracy !")
-    case3 = 0
-    if C < degeneracy:
-        for v_idx, v in enumerate(ordering):
-            Nv = L[v]
-            if len(Nv) <= C:
-                continue
-            for u_idx, u in enumerate(ordering):
-                if u_idx >= v_idx:
-                    break
+    # The next two cases only relevant when c < degeneracy
+    if C >= degeneracy:
+        return C, CW
+    #  CASE 2: u < x < v
+    # Note, only when c < |Left(v)|
+    for v in ordering:
+        if C >= len(L[v]):
+            continue
+        for x in L[v]:
+            for u in L[x]:
                 if G.has_edge(u, v):
                     continue
-                Nu = L[u]
-                if len(Nu) <= C:
-                    continue
-                case3 += 1
-                Nuv = Nu.intersection(Nv)
+                Nuv = L[v].intersection(N[u])
                 if len(Nuv) > C:
+                    # never happens?
                     C = len(Nuv)
                     CW = v, u, Nuv
-    # print("...", case3, "\tc =", C)
+
+    #  CASE 3: x < u < v
+    # Note: only when c < min(|Left(u)|, |Left(v)|)
+    for v_idx, v in enumerate(ordering):
+        if len(L[v]) <= C:
+            continue
+        for u_idx, u in enumerate(ordering):
+            if u_idx >= v_idx:
+                break
+            if G.has_edge(u, v):
+                continue
+            if len(L[u]) <= C:
+                continue
+            Nuv = L[u].intersection(L[v])
+            if len(Nuv) > C:
+                # never happens?
+                C = len(Nuv)
+                CW = v, u, Nuv
     return C, CW
 
 
