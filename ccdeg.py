@@ -112,7 +112,7 @@ def main():
         exit(
             "Usage: ccdeg dataset [dataset2, dataset3, ..., datasetn]"
         )
-    print("name,n,m,deg,c-c,runtime,smaller")
+    print("name,n,m,deg,c-c,time (ms),smaller")
     for fname in sys.argv[1:]:
         start = dt.now()
         # print(start)
