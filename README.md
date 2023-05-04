@@ -16,6 +16,7 @@ smaller than the c-closure.
 
 | name              |     n |      m |   deg |   c-c |   time (ms) | smaller   |
 |-------------------|-------|--------|-------|-------|-------------|-----------|
+| `seventh-graders` |    29 |    250 |    13 |    17 |         3.6 | d         |
 | `karate`          |    34 |     78 |     4 |     6 |         0.6 | d         |
 | `adjnoun`         |   112 |    425 |     6 |    13 |         2.5 | d         |
 | `celegans`        |   131 |    687 |     8 |    13 |         3.4 | d         |
@@ -41,7 +42,7 @@ smaller than the c-closure.
 
 
 
-As can be seen, in these 21 networks, only 4 have $c < d$.
+As can be seen, in these 22 networks, only 4 have $c < d$.
 
 ## Experiments: network-corpus
 
