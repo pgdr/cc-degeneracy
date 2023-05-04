@@ -7,11 +7,19 @@ import networkx as nx
 
 def read_graph(csv_file):
     G = nx.Graph()
+    if csv_file.endswith(".gz"):
+        import gzip
 
-    with open(csv_file, "r", encoding="utf-8") as fin:
-        for line in fin:
-            u, v = map(int, line.split(","))
-            G.add_edge(u, v)
+        with gzip.open(csv_file, "rt") as fin:
+            for line in fin:
+                u, v = map(int, line.split())
+                G.add_edge(u, v)
+
+    else:
+        with open(csv_file, "r", encoding="utf-8") as fin:
+            for line in fin:
+                u, v = map(int, line.split(","))
+                G.add_edge(u, v)
     return G
 
 
