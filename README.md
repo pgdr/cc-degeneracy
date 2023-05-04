@@ -20,24 +20,28 @@ smaller than the c-closure.
 | `adjnoun`         |   112 |    425 |     6 |    13 |         2.5 | d         |
 | `celegans`        |   131 |    687 |     8 |    13 |         3.4 | d         |
 | `arenasjazz`      |   198 |   2742 |    29 |    41 |        15.4 | d         |
-| `*ca-netscience`  |   379 |    914 |     8 |     4 |         5.5 | **c (!)** |
+| *`ca-netscience`  |   379 |    914 |     8 |     4 |         5.5 | **c (!)** |
 | `dnc`             |   906 |  10429 |    74 |    79 |       117.8 | d         |
 | `eu-emails`       |  1005 |  16064 |    34 |   161 |       288.3 | d         |
 | `yeast`           |  1622 |   9070 |    40 |    59 |        53.9 | d         |
 | `bible`           |  1773 |   9131 |    15 |    32 |        57.4 | d         |
 | `ca-csphd`        |  1882 |   1740 |     2 |     2 |        17.1 | d         |
 | `soc-hamsterster` |  2426 |  16630 |    24 |    76 |       181.8 | d         |
-| `*power`          |  4941 |   6594 |     5 |     4 |        50.6 | **c (!)** |
+| *`power`          |  4941 |   6594 |     5 |     4 |        50.6 | **c (!)** |
+| *`ca-GrQc`        |  5242 |  14484 |    43 |    42 |       164.7 | **c (!)** |
 | `facebook`        |  5524 |  94218 |    39 |   170 |      1622.1 | d         |
 | `soc-advogato`    |  6551 |  39432 |    25 |   217 |       673.5 | d         |
+| `wiki-Vote`       |  7115 | 100762 |    53 |   440 |      7001.8 | d         |
 | `bio-dmela`       |  7393 |  25569 |    11 |    71 |       210.9 | d         |
-| `*ca-heph`        | 12008 | 118489 |   238 |    89 |      2253.6 | **c (!)** |
+| *`ca-heph`        | 12008 | 118489 |   238 |    89 |      2253.6 | **c (!)** |
 | `ca-astroph`      | 18772 | 198050 |    56 |    60 |      3008.8 | d         |
 | `internet-as`     | 22963 |  48436 |    25 |   217 |       576.5 | d         |
 | `enron-email`     | 36692 | 183831 |    43 |   186 |      4472.5 | d         |
 | `soc-brightkite`  | 56739 | 212945 |    52 |   183 |      2931.1 | d         |
 
-As can be seen, in these 20 networks, only 3 have $c < d$.
+
+
+As can be seen, in these 21 networks, only 4 have $c < d$.
 
 ## Experiments: network-corpus
 
@@ -61,23 +65,23 @@ the results are below.  We added a timeout on 600 seconds; 3 of 206 graphs timed
 | `bergen`                                 |     53 |     272 |     9 |    12 |         4.3 | d         |
 | `iscas89-s208.1`                         |     61 |      67 |     2 |     2 |         3.1 | d         |
 | `dolphins`                               |     62 |     159 |     4 |     4 |         5.7 | d         |
-| `*trainbombing`                          |     64 |     243 |    10 |     8 |         4.2 | **c (!)** |
+| *`trainbombing`                          |     64 |     243 |    10 |     8 |         4.2 | **c (!)** |
 | `BioGrid-Emericella-Nidulans-Fgsc-A4`    |     64 |      62 |     2 |     2 |         3.3 | d         |
 | `pollination-tenerife`                   |     68 |     129 |     4 |    10 |         3.5 | d         |
 | `BioGrid-Cricetulus-Griseus`             |     69 |      57 |     1 |     1 |         3.8 | d         |
-| `*Noordin-terror-relation`               |     70 |     251 |    11 |    10 |         4.4 | **c (!)** |
-| `*mg_watchmen`                           |     76 |     201 |     7 |     5 |         3.7 | **c (!)** |
-| `*lesmiserables`                         |     77 |     254 |     9 |     8 |         4.1 | **c (!)** |
+| *`Noordin-terror-relation`               |     70 |     251 |    11 |    10 |         4.4 | **c (!)** |
+| *`mg_watchmen`                           |     76 |     201 |     7 |     5 |         3.7 | **c (!)** |
+| *`lesmiserables`                         |     77 |     254 |     9 |     8 |         4.1 | **c (!)** |
 | `mg_godfatherII`                         |     78 |     219 |     8 |     8 |         4   | d         |
 | `iscas89-s298`                           |     92 |     131 |     2 |     5 |         3.6 | d         |
-| `*mg_forrestgump`                        |     94 |     271 |     8 |     3 |         5.7 | **c (!)** |
+| *`mg_forrestgump`                        |     94 |     271 |     8 |     3 |         5.7 | **c (!)** |
 | `win95pts`                               |     99 |     112 |     2 |     3 |         4.4 | d         |
 | `iscas89-s641`                           |    100 |     144 |     3 |     6 |         3.8 | d         |
 | `iscas89-s344`                           |    100 |     122 |     2 |     4 |         3.6 | d         |
 | `movies`                                 |    101 |     192 |     3 |     5 |         4.7 | d         |
 | `iscas89-s349`                           |    102 |     127 |     2 |     4 |         3.4 | d         |
 | `polbooks`                               |    105 |     441 |     6 |    15 |         5.3 | d         |
-| `*mg_casino`                             |    109 |     326 |     9 |     7 |         4.7 | **c (!)** |
+| *`mg_casino`                             |    109 |     326 |     9 |     7 |         4.7 | **c (!)** |
 | `word_adjacencies`                       |    112 |     425 |     6 |    13 |         5.3 | d         |
 | `hypertext_2009`                         |    113 |    2196 |    28 |    53 |        33.2 | d         |
 | `iscas89-s386`                           |    114 |     200 |     3 |    12 |         4   | d         |
@@ -115,7 +119,7 @@ the results are below.  We added a timeout on 600 seconds; 3 of 206 graphs timed
 | `haggle`                                 |    274 |    2124 |    39 |    40 |        24.9 | d         |
 | `celegans`                               |    297 |    2148 |    10 |    40 |        19.2 | d         |
 | `BioGrid-Human-Herpesvirus-4`            |    323 |     326 |     2 |     5 |         5.6 | d         |
-| `*hex`                                   |    331 |     930 |     3 |     2 |        26.3 | **c (!)** |
+| *`hex`                                   |    331 |     930 |     3 |     2 |        26.3 | **c (!)** |
 | `iscas89-s953`                           |    332 |     454 |     2 |     3 |         5.7 | d         |
 | `autobahn`                               |    374 |     478 |     2 |     2 |         6.4 | d         |
 | `photoviz_dynamic`                       |    376 |     610 |     4 |    12 |         8.1 | d         |
@@ -126,7 +130,7 @@ the results are below.  We added a timeout on 600 seconds; 3 of 206 graphs timed
 | `iscas89-s1238`                          |    416 |     625 |     2 |     2 |         7   | d         |
 | `iscas89-s1423`                          |    423 |     554 |     2 |     4 |         6.9 | d         |
 | `ecoli-transcript`                       |    423 |     519 |     3 |    10 |         6.9 | d         |
-| `*muenchen-bahn`                         |    447 |     578 |     2 |     1 |        13.7 | **c (!)** |
+| *`muenchen-bahn`                         |    447 |     578 |     2 |     1 |        13.7 | **c (!)** |
 | `BioGrid-Bos-Taurus`                     |    454 |     424 |     3 |     6 |         6.4 | d         |
 | `iscas89-s1488`                          |    463 |     779 |     3 |    10 |         8.2 | d         |
 | `iscas89-s1494`                          |    473 |     796 |     3 |    10 |         8.3 | d         |
@@ -156,9 +160,9 @@ the results are below.  We added a timeout on 600 seconds; 3 of 206 graphs timed
 | `web-google`                             |   1299 |    2773 |    17 |    17 |        23.9 | d         |
 | `munin`                                  |   1324 |    1397 |     3 |    28 |        15.4 | d         |
 | `iscas89-s5378`                          |   1411 |    1639 |     3 |     4 |        16.1 | d         |
-| `*diseasome`                             |   1419 |    2738 |    11 |     8 |        21.9 | **c (!)** |
+| *`diseasome`                             |   1419 |    2738 |    11 |     8 |        21.9 | **c (!)** |
 | `BioGrid-Dosage-Growth-Defect`           |   1447 |    2193 |     5 |    69 |        21.1 | d         |
-| `*netscience`                            |   1461 |    2742 |    19 |     5 |        24.2 | **c (!)** |
+| *`netscience`                            |   1461 |    2742 |    19 |     5 |        24.2 | **c (!)** |
 | `chicago`                                |   1467 |    1298 |     1 |     1 |        16.8 | d         |
 | `pollination-carlinville`                |   1500 |   15255 |    18 |    66 |       269.1 | d         |
 | `bitcoin-otc-negative`                   |   1606 |    3259 |    16 |    38 |        32   | d         |
@@ -186,7 +190,7 @@ the results are below.  We added a timeout on 600 seconds; 3 of 206 graphs timed
 | `BioGrid-Co-Localization`                |   3543 |    4452 |     6 |    24 |        40.5 | d         |
 | `twittercrawl`                           |   3656 |  154824 |   142 |   506 |     23057.7 | d         |
 | `BioGrid-Escherichia-Coli-K12-W3110`     |   4063 |  181620 |   156 |   441 |     63160.8 | d         |
-| `*boards_gender_1m`                      |   4134 |   19993 |    25 |    19 |       142.5 | **c (!)** |
+| *`boards_gender_1m`                      |   4134 |   19993 |    25 |    19 |       142.5 | **c (!)** |
 | `boards_gender_2m`                       |   4220 |    5598 |     4 |    20 |        49   | d         |
 | `web-EPA`                                |   4271 |    8909 |     6 |    63 |        72.7 | d         |
 | `BioGrid-Co-Purification`                |   4326 |    5970 |    12 |    70 |        56.8 | d         |
@@ -214,8 +218,8 @@ the results are below.  We added a timeout on 600 seconds; 3 of 206 graphs timed
 | `BioGrid-Co-Fractionation`               |  11017 |   56354 |    83 |    83 |       779.3 | d         |
 | `AS-oregon-1`                            |  11174 |   23409 |    17 |    74 |       251.3 | d         |
 | `AS-oregon-2`                            |  11461 |   32730 |    31 |   117 |       411.3 | d         |
-| `*ca-HepPh`                              |  12006 |  118489 |   238 |    89 |      3534.1 | **c (!)** |
-| `*iscas89-s35932`                        |  12515 |   15961 |     2 |     1 |      7680.6 | **c (!)** |
+| *`ca-HepPh`                              |  12006 |  118489 |   238 |    89 |      3534.1 | **c (!)** |
+| *`iscas89-s35932`                        |  12515 |   15961 |     2 |     1 |      7680.6 | **c (!)** |
 | `foldoc`                                 |  13356 |   91471 |    12 |    62 |       976.6 | d         |
 | `BioGrid-Affinity-Capture-Rna`           |  13765 |   42815 |    54 |  1629 |      1875.1 | d         |
 | `marvel`                                 |  19428 |   96662 |    18 |   744 |      2670.6 | d         |
