@@ -19,6 +19,16 @@ some from the folder `dataset` in this repository, the results are
 below.  We note that 3 of 229 graphs used more than 25 minutes, while
 180 graphs were solved in less than a second (in Python).
 
+Only 5 of 229 graphs used more than a minute, and they all had degeneracy smaller than c-closure:
+
+* `BioGrid-All`  $n=75550, m=1316843, d=164, c=1791$  **6 min**
+* `livemocha`  $n=104103, m=2193083, d=92, c=1128$   **7 min**
+* `tv_tropes`  $n=152093, m=3232134, d=115, c=2654$   **25 min**
+* `movielens_1m` $n=9746, m=1000209, d=221, c=2355$     **37 min**
+* `dogster_friendships` $n=426820, m=8543549, d=248, c=32803$  **1 h 49 min**
+
+
+### Analysis
 
 | name                                     |      n |       m |   deg |   c-c |    time ms | smaller |
 |------------------------------------------|--------|---------|-------|-------|------------|---------|
