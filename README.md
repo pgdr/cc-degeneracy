@@ -11,6 +11,15 @@ back to a quadratic time algorithm, $O(d \cdot n^2)$.
 However, our analyses show that in general, degeneracy is in fact
 smaller than the c-closure.
 
+In fact, the best known algorithm for computing the c-closure is in
+$O(c\cdot n^\omega)$ time, where $\omega$ is the matrix multiplication
+constant.  This means that if $d \in O(n^{0.37})$, then this algorithm
+is faster than the best known algorithm.  In the case where degeneracy
+is smaller than the c-closure, as we see below it is in most cases, the
+$O(d^3 \cdot n)$ is much faster than $O(c \cdot n^\omega)$ for all our
+dataset.
+
+
 ## Some experiments
 
 We ran our algorithm on all the datasets from
