@@ -141,7 +141,7 @@ def main():
         delta = round((end - start).total_seconds() * 1000, 1)
         print(f"{delta}", end=",")
         print("c" if cc < dgy else "d")
-
+        sys.stdout.flush()
 
 if __name__ == "__main__":
     main()
