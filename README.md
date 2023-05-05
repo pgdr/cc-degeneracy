@@ -37,6 +37,11 @@ Only 5 of 229 graphs used more than a minute, and they all had degeneracy smalle
 * `dogster_friendships` **1 h 49 min** ($n=426820, m=8543549, d=248, c=32803$)
 
 
+In this dataset, 17 of 229 networks have $c < d$, whereas in 212, we have $c \geq d$.
+
+This means that $212/229 \approx 0.926 = 92.6\%$ are solved completely by _Case 1_.
+
+
 ### Analysis
 
 | name                                     |      n |       m |   deg |   c-c |    time ms | smaller |
@@ -269,7 +274,3 @@ Only 5 of 229 graphs used more than a minute, and they all had degeneracy smalle
 | `panama`                                 | 556686 |  702437 |    62 |  1947 |  12712.9   | d       |
 | `countries`                              | 592414 |  624402 |     6 | 11047 |  28089.4   | d       |
 | `teams`                                  | 935591 | 1366466 |     9 |   350 |  36653.5   | d       |
-
-In this larger dataset, 17 of 229 networks have $c < d$, whereas in 212, we have $c \geq d$.
-
-This means that $212/229 \approx 0.926 = 92.6\%$ are solved completely by _Case 1_.
