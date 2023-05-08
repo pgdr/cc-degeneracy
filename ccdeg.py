@@ -30,7 +30,7 @@ def degeneracy_ordering(G):
     ordering = []
     deg = 0
     while pq:
-        d, v = Q.heappop(pq)
+        _, v = Q.heappop(pq)
         if degrees[v] == -1:
             continue
         ordering.append(v)
@@ -117,27 +117,22 @@ def c_closure(G):
 
 def main():
     if len(sys.argv) < 2:
-        exit(
+        sys.exit(
             "Usage: ccdeg dataset [dataset2, dataset3, ..., datasetn]"
         )
     print("name,n,m,deg,c-c,time (ms),smaller")
     for fname in sys.argv[1:]:
-        start = dt.now()
-        # print(start)
-
         print(fname, end=",")
-
         graph = read_graph(fname)
         graph.remove_edges_from(nx.selfloop_edges(graph))
         print(f"{len(graph.nodes())}", end=",")
         print(f"{len(graph.edges())}", end=",")
         dgy = max(nx.core_number(graph).values())
         print(f"{dgy}", end=",")
-        cc, cw = c_closure(graph)
+        start = dt.now()
+        cc, _ = c_closure(graph)
         print(f"{cc}", end=",")
-        # print(f"c-closure witness {cw[0], cw[1]}: \t {cw[2]}")
         end = dt.now()
-        # print(end)
         delta = round((end - start).total_seconds() * 1000, 1)
         print(f"{delta}", end=",")
         print("c" if cc < dgy else "d")
