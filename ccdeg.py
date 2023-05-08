@@ -117,26 +117,32 @@ def c_closure(G):
 
 def main():
     if len(sys.argv) < 2:
-        sys.exit(
-            "Usage: ccdeg dataset [dataset2, dataset3, ..., datasetn]"
-        )
+        sys.exit("Usage: ccdeg dataset [dataset2, dataset3, ..., datasetn]")
     print("name,n,m,deg,c-c,time (ms),smaller")
     for fname in sys.argv[1:]:
-        print(fname, end=",")
+        output = []
+        output.append(f"`{fname}`")
         graph = read_graph(fname)
         graph.remove_edges_from(nx.selfloop_edges(graph))
-        print(f"{len(graph.nodes())}", end=",")
-        print(f"{len(graph.edges())}", end=",")
+        output.append(f"{len(graph.nodes())}")
+        output.append(f"{len(graph.edges())}")
         dgy = max(nx.core_number(graph).values())
-        print(f"{dgy}", end=",")
+        output.append(f"{dgy}")
         start = dt.now()
         cc, _ = c_closure(graph)
-        print(f"{cc}", end=",")
+        output.append(f"{cc}")
         end = dt.now()
         delta = round((end - start).total_seconds() * 1000, 1)
-        print(f"{delta}", end=",")
-        print("c" if cc < dgy else "d")
+        output.append(f"{delta}")
+        if cc < dgy:
+            output.append('"**c !**"')
+            output[0] = "*" + output[0]
+        else:
+            output.append("d")
+        output[0] = f'"{output[0]}"'
+        print(",".join(output))
         sys.stdout.flush()
+
 
 if __name__ == "__main__":
     main()
