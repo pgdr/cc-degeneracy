@@ -129,7 +129,7 @@ def c_closure(G):
 def main():
     if len(sys.argv) < 2:
         sys.exit("Usage: ccdeg dataset [dataset2, dataset3, ..., datasetn]")
-    print("name,n,m,deg,c-c,time (ms),smaller")
+    print("name,n,m,deg,c-c,time_ms,smaller")
     for fname in sys.argv[1:]:
         shortname = os.path.basename(fname)
         output = []
