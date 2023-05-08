@@ -12,6 +12,8 @@ def read_graph(csv_file):
 
         with gzip.open(csv_file, "rt") as fin:
             for line in fin:
+                if line.startswith("#"):
+                    continue
                 u, v = map(int, line.split())
                 G.add_edge(u, v)
 
