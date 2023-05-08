@@ -3,6 +3,8 @@ from itertools import combinations as choose
 from datetime import datetime as dt
 import heapq as Q
 import networkx as nx
+from networkx.algorithms import bipartite
+import os
 
 
 def read_graph(csv_file):
@@ -62,6 +64,13 @@ def left_neighbors(G, ordering):
 
 
 def c_closure(G):
+    """the c-closure of a graph is the smallest integer such that any two
+    non-adjacent vertices have less than common neighbors.
+
+    10.1016/j.dam.2021.06.019
+
+    We return the 1+size of largest common neighborhood u,v s.t. uv notin E
+    """
     degeneracy, ordering = degeneracy_ordering(G)
     L = left_neighbors(G, ordering)
     N = {v: set(nx.neighbors(G, v)) for v in G.nodes()}
@@ -81,7 +90,7 @@ def c_closure(G):
 
     # The next two cases only relevant when c < degeneracy
     if C >= degeneracy:
-        return C, CW
+        return C + 1, CW
     #  CASE 2: u < x < v
     # Note, only when c < |Left(v)|
     for v in ordering:
@@ -114,7 +123,7 @@ def c_closure(G):
                 # never happens?
                 C = len(Nuv)
                 CW = v, u, Nuv
-    return C, CW
+    return C + 1, CW
 
 
 def main():
@@ -122,18 +131,23 @@ def main():
         sys.exit("Usage: ccdeg dataset [dataset2, dataset3, ..., datasetn]")
     print("name,n,m,deg,c-c,time (ms),smaller")
     for fname in sys.argv[1:]:
+        shortname = os.path.basename(fname)
         output = []
-        output.append(f"`{fname}`")
+        output.append(f"`{shortname}`")
         graph = read_graph(fname)
         graph.remove_edges_from(nx.selfloop_edges(graph))
         output.append(f"{len(graph.nodes())}")
         output.append(f"{len(graph.edges())}")
         dgy = max(nx.core_number(graph).values())
         output.append(f"{dgy}")
+        bip = bipartite.is_bipartite(graph)
         start = dt.now()
-        cc, _ = c_closure(graph)
-        output.append(f"{cc}")
+        if bip:
+            cc = 0
+        else:
+            cc, _ = c_closure(graph)
         end = dt.now()
+        output.append(f"{cc}")
         delta = round((end - start).total_seconds() * 1000, 1)
         output.append(f"{delta}")
         if cc < dgy:
@@ -141,6 +155,11 @@ def main():
             output[0] = "*" + output[0]
         else:
             output.append("d")
+
+        if bip:
+            output[0] = "bip" + output[0]
+            output[-1] = "b"
+
         output[0] = f'"{output[0]}"'
         print(",".join(output))
         sys.stdout.flush()
