@@ -3,7 +3,9 @@ import sys
 import heapq
 
 
-def _left_neighborhood(graph: list[list[int]], V_to_idx, v: int) -> list[int]:
+def _left_neighborhood(
+    graph: list[list[int]], V_to_idx: dict[int, int], v: int
+) -> list[int]:
     lv: list[int] = []
     for u in graph[v]:
         if V_to_idx[u] < V_to_idx[v]:
@@ -49,30 +51,34 @@ def degeneracy(graph: list[list[int]]) -> tuple[int, list[int]]:
     d = {v: len(graph[v]) for v in range(len(graph))}
     queue = [(d[v], v) for v in range(len(graph))]
     heapq.heapify(queue)
-    retval: list[int] = []
+    ordering: list[int] = []
     deg = 0
     while queue:
-        dv, v = heapq.heappop(queue)
+        _, v = heapq.heappop(queue)
         if d[v] == -1:
             continue
-        retval.append(v)
+        ordering.append(v)
+        deg = max(deg, d[v])
+        d[v] = -1
         for i in range(len(graph[v])):
             u = graph[v][i]
             if d[u] == -1:
                 continue
             heapq.heappush(queue, (d[u] - 1, u))
-        deg = max(deg, d[v])
-        d[v] = -1
-    return deg, list(reversed(retval))
+            d[u] -= 1
+    return deg, list(reversed(ordering))
 
 
 def main() -> None:
     vertices: set[int] = set()
     edges: set[tuple[int, int]] = set()
+
+    N = 0
     for line in sys.stdin:
-        va, vb = line.split(" ")
+        va, vb = line.split()
         a = int(va)
         b = int(vb)
+        N = max((a, b, N))
         vertices.add(a)
         vertices.add(b)
         edges.add((a, b))
@@ -80,19 +86,24 @@ def main() -> None:
     for e in edges:
         adj[e[0]].append(e[1])
         adj[e[1]].append(e[0])
-    print(",", end="")
-    print(len(adj), end=",")
-    print(len(edges), end=",")
+
+    output: list[str] = []
+    output.append(str(N + 1))
+    output.append(str(len(edges)))
     del edges
-    deg, ordering = degeneracy(adj)
-    print(deg, end=",")
+    dgy, ordering = degeneracy(adj)
+    output.append(str(dgy))
     L = left_neighbors(adj, ordering)
     start = dt.now()
     cc = c_closure(adj, ordering, L)
     end = dt.now()
     delta = round((end - start).total_seconds() * 1000, 1)
+    output.append(str(cc))
+    output.append(str(delta))
+    output.append("c" if cc < dgy else "d")
+    output.append("x")
+    print(",".join(output))
 
-    print(f"{cc},{delta}")
 
-
-main()
+if __name__ == "__main__":
+    main()
