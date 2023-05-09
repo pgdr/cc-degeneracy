@@ -4,26 +4,13 @@ from datetime import datetime as dt
 import heapq as Q
 import networkx as nx
 from networkx.algorithms import bipartite
-import os
 
 
-def read_graph(csv_file):
+def read_graph():
     G = nx.Graph()
-    if csv_file.endswith(".gz"):
-        import gzip
-
-        with gzip.open(csv_file, "rt") as fin:
-            for line in fin:
-                if line.startswith("#"):
-                    continue
-                u, v = map(int, line.split())
-                G.add_edge(u, v)
-
-    else:
-        with open(csv_file, "r", encoding="utf-8") as fin:
-            for line in fin:
-                u, v = map(int, line.split(","))
-                G.add_edge(u, v)
+    for line in sys.stdin:
+        u, v = map(int, line.split())
+        G.add_edge(u, v)
     return G
 
 
@@ -127,42 +114,29 @@ def c_closure(G):
 
 
 def main():
-    if len(sys.argv) < 2:
-        sys.exit("Usage: ccdeg dataset [dataset2, dataset3, ..., datasetn]")
-    print("name,n,m,deg,c-c,time_ms,smaller")
-    for fname in sys.argv[1:]:
-        shortname = os.path.basename(fname)
-        output = []
-        output.append(f"`{shortname}`")
-        graph = read_graph(fname)
-        graph.remove_edges_from(nx.selfloop_edges(graph))
-        output.append(f"{len(graph.nodes())}")
-        output.append(f"{len(graph.edges())}")
-        dgy = max(nx.core_number(graph).values())
-        output.append(f"{dgy}")
-        bip = bipartite.is_bipartite(graph)
-        start = dt.now()
-        if bip:
-            cc = 0
-        else:
-            cc, _ = c_closure(graph)
-        end = dt.now()
-        output.append(f"{cc}")
-        delta = round((end - start).total_seconds() * 1000, 1)
-        output.append(f"{delta}")
-        if cc < dgy:
-            output.append('"**c !**"')
-            output[0] = "*" + output[0]
-        else:
-            output.append("d")
+    output = []
 
-        if bip:
-            output[0] = "bip" + output[0]
-            output[-1] = "b"
+    graph = read_graph()
+    graph.remove_edges_from(nx.selfloop_edges(graph))
+    output.append(f"{len(graph.nodes())}")
+    output.append(f"{len(graph.edges())}")
+    dgy = max(nx.core_number(graph).values())
+    output.append(f"{dgy}")
+    bip = bipartite.is_bipartite(graph)
+    start = dt.now()
+    cc, _ = c_closure(graph)
+    end = dt.now()
+    output.append(f"{cc}")
+    delta = round((end - start).total_seconds() * 1000, 1)
+    output.append(f"{delta}")
+    if cc < dgy:
+        output.append('"**c !**"')
+    else:
+        output.append("d")
 
-        output[0] = f'"{output[0]}"'
-        print(",".join(output))
-        sys.stdout.flush()
+    output.append("b" if bip else "u")
+
+    print(",".join(output))
 
 
 if __name__ == "__main__":
