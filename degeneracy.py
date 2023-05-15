@@ -51,7 +51,7 @@ def c_closure(graph, ordering, L, V_to_idx, dgy) -> int:
                     C = len(Nuv)
 
     # The next two cases only relevant when c < degeneracy
-    if C >= dgy:
+    if C >= dgy or (C == 1 == dgy - 1):
         return C + 1
 
     #  CASE 2: u < x < v
