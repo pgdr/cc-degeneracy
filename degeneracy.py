@@ -13,22 +13,24 @@ def _left_neighborhood(
     return lv
 
 
-def left_neighbors(graph: list[list[int]], ordering: list[int]) -> dict[int, set[int]]:
+def left_neighbors(
+    graph: list[list[int]], ordering: list[int]
+) -> dict[int, set[int]]:
     L = {}
     V_to_idx = {v: i for (i, v) in enumerate(ordering)}
 
     for v in range(len(graph)):
         L[v] = set(_left_neighborhood(graph, V_to_idx, v))
-    return L
+    return L, V_to_idx
 
 
-def has_edge(graph: list[list[int]], u: int, v: int) -> bool:
-    if len(graph[u]) < len(graph[v]):
-        v, u = u, v
-    return u in graph[v]  # Can be done in O(d) time
+def has_edge(graph, L, V_to_idx, u: int, v: int) -> bool:
+    if V_to_idx[v] > V_to_idx[u]:
+        return u in L[v]
+    return v in L[u]
 
 
-def c_closure(graph, ordering, L) -> int:
+def c_closure(graph, ordering, L, V_to_idx) -> int:
     N = {v: set(graph[v]) for v in range(len(graph))}
     C = -2  # the c-closure
 
@@ -39,7 +41,9 @@ def c_closure(graph, ordering, L) -> int:
             u = Nx[i_u]
             for i_v in range(i_u + 1, len(Nx)):
                 v = Nx[i_v]
-                if has_edge(graph, u, v):
+                if len(N[u]) <= C or len(N[v]) <= C:
+                    continue
+                if has_edge(graph, L, V_to_idx, u, v):
                     continue
                 Nuv = N[u].intersection(N[v])
                 if len(Nuv) > C:
@@ -93,9 +97,9 @@ def main() -> None:
     del edges
     dgy, ordering = degeneracy(adj)
     output.append(str(dgy))
-    L = left_neighbors(adj, ordering)
+    L, V_to_idx = left_neighbors(adj, ordering)
     start = dt.now()
-    cc = c_closure(adj, ordering, L)
+    cc = c_closure(adj, ordering, L, V_to_idx)
     end = dt.now()
     delta = round((end - start).total_seconds() * 1000, 1)
     output.append(str(cc))
