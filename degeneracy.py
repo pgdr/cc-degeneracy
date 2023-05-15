@@ -1,6 +1,7 @@
 from datetime import datetime as dt
 import sys
 import heapq
+import signal
 
 
 def _left_neighborhood(
@@ -107,7 +108,21 @@ def degeneracy(graph: list[list[int]]) -> tuple[int, list[int]]:
     return deg, list(reversed(ordering))
 
 
+output = []
+
+
+def kill(signal, frame, message="killed"):
+    global output
+    output.append(message)
+    print(",".join(output))
+    sys.stdout.flush()
+    sys.exit(4)
+
+
 def main() -> None:
+    global output
+    signal.signal(signal.SIGTERM, kill)
+    signal.signal(signal.SIGKILL, kill)
     vertices: set[int] = set()
     edges: set[tuple[int, int]] = set()
 
