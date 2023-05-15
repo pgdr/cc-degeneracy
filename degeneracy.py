@@ -30,7 +30,7 @@ def has_edge(graph, L, V_to_idx, u: int, v: int) -> bool:
     return v in L[u]
 
 
-def c_closure(graph, ordering, L, V_to_idx) -> int:
+def c_closure(graph, ordering, L, V_to_idx, dgy) -> int:
     N = {v: set(graph[v]) for v in range(len(graph))}
     C = -2  # the c-closure
 
@@ -48,6 +48,40 @@ def c_closure(graph, ordering, L, V_to_idx) -> int:
                 Nuv = N[u].intersection(N[v])
                 if len(Nuv) > C:
                     C = len(Nuv)
+
+    # The next two cases only relevant when c < degeneracy
+    if C >= dgy:
+        return C + 1
+
+    #  CASE 2: u < x < v
+    # Note, only when c < |Left(v)|
+    for v in ordering:
+        if C >= len(L[v]):
+            continue
+        for x in L[v]:
+            for u in L[x]:
+                if has_edge(graph, L, V_to_idx, u, v):
+                    continue
+                Nuv = L[v].intersection(N[u])
+                if len(Nuv) > C:
+                    C = len(Nuv)
+
+    #  CASE 3: x < u < v
+    # Note: only when c < min(|Left(u)|, |Left(v)|)
+    for v_idx, v in enumerate(ordering):
+        if len(L[v]) <= C:
+            continue
+        for u_idx, u in enumerate(ordering):
+            if u_idx >= v_idx:
+                break
+            if has_edge(graph, L, V_to_idx, u, v):
+                continue
+            if len(L[u]) <= C:
+                continue
+            Nuv = L[u].intersection(L[v])
+            if len(Nuv) > C:
+                C = len(Nuv)
+
     return C + 1
 
 
@@ -77,21 +111,23 @@ def main() -> None:
     vertices: set[int] = set()
     edges: set[tuple[int, int]] = set()
 
-    N = 0
-    for line in sys.stdin:
-        va, vb = line.split()
-        a = int(va)
-        b = int(vb)
-        N = max((a, b, N))
-        vertices.add(a)
-        vertices.add(b)
-        edges.add((a, b))
-    adj: list[list[int]] = [[] for _ in range(len(vertices) + 1)]
-    for e in edges:
-        adj[e[0]].append(e[1])
-        adj[e[1]].append(e[0])
+    try:
+        N = 0
+        for line in sys.stdin:
+            va, vb = line.split()
+            a = int(va)
+            b = int(vb)
+            N = max((a, b, N))
+            vertices.add(a)
+            vertices.add(b)
+            edges.add((a, b))
+        adj: list[list[int]] = [[] for _ in range(len(vertices) + 1)]
+        for e in edges:
+            adj[e[0]].append(e[1])
+            adj[e[1]].append(e[0])
+    except Exception as err:
+        kill(0, 0, str(err))
 
-    output: list[str] = []
     output.append(str(N + 1))
     output.append(str(len(edges)))
     del edges
@@ -99,7 +135,7 @@ def main() -> None:
     output.append(str(dgy))
     L, V_to_idx = left_neighbors(adj, ordering)
     start = dt.now()
-    cc = c_closure(adj, ordering, L, V_to_idx)
+    cc = c_closure(adj, ordering, L, V_to_idx, dgy)
     end = dt.now()
     delta = round((end - start).total_seconds() * 1000, 1)
     output.append(str(cc))
