@@ -6,18 +6,16 @@
 #include <sstream>
 #include <string>
 #include <unordered_map>
-#include <unordered_set>
 #include <utility>
 #include <vector>
 
-using Set = std::unordered_set<int>;
 using List = std::vector<int>;
-using Map_i_i = std::unordered_map<int, int>;
-using Map_i_s = std::unordered_map<int, Set>;
+using Map_int_int = std::unordered_map<int, int>;
+using Map_int_list = std::unordered_map<int, List>;
 using Graph = std::vector<List>;
 using Pair = std::pair<int, int>;
 
-List degeneracy(Graph graph) {
+List degeneracy(const Graph &graph) {
   int n = graph.size();
   List ordering(n);
   List degree(n);
@@ -55,10 +53,10 @@ List degeneracy(Graph graph) {
   }
 
   std::reverse(ordering.begin(), ordering.end());
-  return ordering;
+  return std::move(ordering);
 }
 
-List _left_neighborhood(const Graph &graph, const Map_i_i &V_to_idx, int v) {
+List _left_neighborhood(const Graph &graph, const Map_int_int &V_to_idx, int v) {
   List lv;
 
   for (int u : graph[v]) {
@@ -67,27 +65,26 @@ List _left_neighborhood(const Graph &graph, const Map_i_i &V_to_idx, int v) {
     }
   }
 
-  return lv;
+  return std::move(lv);
 }
 
-Map_i_s left_neighbors(const Graph &graph, const List &ordering) {
-  Map_i_s L;
-  Map_i_i V_to_idx;
+Map_int_list left_neighbors(const Graph &graph, const List &ordering) {
+  Map_int_list L;
+  Map_int_int V_to_idx;
 
-  for (int i = 0; i < ordering.size(); i++) {
+  for (auto i = 0; i < ordering.size(); ++i) {
     V_to_idx[ordering[i]] = i;
   }
 
   for (int v = 0; v < graph.size(); v++) {
-    List lv = _left_neighborhood(graph, V_to_idx, v);
-    L[v] = Set(lv.begin(), lv.end());
+    L[v] = _left_neighborhood(graph, V_to_idx, v);
   }
 
-  return L;
+  return std::move(L);
 }
 
 bool has_edge(const Graph &graph, int u, int v) {
-  if (graph[u].size() < graph[v].size()) {
+  if (graph[u].size() > graph[v].size()) {
     int tmp = u;
     u = v;
     v = tmp;
@@ -99,32 +96,30 @@ bool has_edge(const Graph &graph, int u, int v) {
 
 int c_closure(const Graph &graph,
               const List &ordering,
-              const Map_i_s &L) {
-  Map_i_s N;
-
-  for (int v = 0; v < graph.size(); v++)
-    N[v] = Set(graph[v].begin(), graph[v].end());
-
+              const Map_int_list &L) {
   int C = -2;  // the c-closure
 
   // CASE 1: u < v < x
   for (int x : ordering) {
-    const List Nx ( L.at(x).begin(), L.at(x).end() );
+    for (auto i_u = 0; i_u < graph[x].size(); ++i_u) {
+      auto u = graph[x][i_u];
 
-    for (auto i_u = 0; i_u < Nx.size(); ++i_u) {
-      auto u = Nx[i_u];
+      for (auto i_v = i_u + 1; i_v < graph[x].size(); ++i_v) {
+        auto v = graph[x][i_v];
 
-      for (auto i_v = i_u + 1; i_v < Nx.size(); ++i_v) {
-        auto v = Nx[i_v];
+        if (((int)graph[u].size()) <= C || ((int)graph[v].size()) <= C)
+          continue;
 
         if (has_edge(graph, u, v))
           continue;
 
-        Set Nuv;
+        List Nuv;
+        const List &small = (graph[u].size() < graph[v].size()) ? graph[u] : graph[v];
+        const List &large = (graph[u].size() < graph[v].size()) ? graph[v] : graph[u];
 
-        for (int w : N[u]) {
-          if (N[v].count(w) > 0)
-            Nuv.insert(w);
+        for (int e : small) {
+          if (std::find(large.begin(), large.end(), e) != large.end())
+            Nuv.push_back(e);
         }
 
         int size = Nuv.size();
@@ -178,7 +173,7 @@ int main() {
   edges.shrink_to_fit();
   int n = graph.size();
   List ordering = degeneracy(graph);
-  Map_i_s leftNeighbors = left_neighbors(graph, ordering);
+  Map_int_list leftNeighbors = left_neighbors(graph, ordering);
   int deg = -1;
 
   for (int u = 0; u < graph.size(); ++u) {
@@ -188,17 +183,16 @@ int main() {
       deg = size;
   }
 
-  auto start_time = std::chrono::high_resolution_clock::now();
+  //auto start_time = std::chrono::high_resolution_clock::now();
   int cClosure = c_closure(graph, ordering, leftNeighbors);
-  auto end_time = std::chrono::high_resolution_clock::now();
-  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
-  std::cout << n << "," << m << "," << deg << "," << cClosure << "," << duration.count() << ",";
-
-  if (cClosure < deg)
-    std::cout << "c";
-  else
-    std::cout << "d";
-
-  std::cout << ",x" << std::endl;
+  //auto end_time = std::chrono::high_resolution_clock::now();
+  //auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+  //std::cout << n << "," << m << "," << deg << "," << cClosure << "," << duration.count() << ",";
+  //if (cClosure < deg)
+  //  std::cout << "c";
+  //else
+  //  std::cout << "d";
+  //std::cout << ",x" << std::endl;
+  std::cout << cClosure << std::endl;
   return 0;
 }
