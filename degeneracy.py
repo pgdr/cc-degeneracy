@@ -122,7 +122,6 @@ def kill(signal, frame, message="killed"):
 def main() -> None:
     global output
     signal.signal(signal.SIGTERM, kill)
-    signal.signal(signal.SIGKILL, kill)
     vertices: set[int] = set()
     edges: set[tuple[int, int]] = set()
 
