@@ -5,6 +5,8 @@ import networkx as nx
 def read_graph():
     G = nx.Graph()
     for line in sys.stdin:
+        if line.startswith("#"):
+            continue
         u, v = map(int, line.split())
         G.add_edge(u, v)
     return G
