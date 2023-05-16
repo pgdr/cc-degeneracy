@@ -1,13 +1,20 @@
 import sys
 import networkx as nx
 
+def tryint(s):
+    try:
+        return int(s)
+    except Exception:
+        return s
 
 def read_graph():
     G = nx.Graph()
     for line in sys.stdin:
-        if line.startswith("#"):
+        if line.startswith("#") or line.startswith("%"):
             continue
         u, v = map(int, line.split())
+        u = tryint(u)
+        v = tryint(v)
         G.add_edge(u, v)
     return G
 
